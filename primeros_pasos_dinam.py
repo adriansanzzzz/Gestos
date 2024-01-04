@@ -65,26 +65,7 @@ def update_hist(letter,lm):
           landmarks_hist.pop(0)
           dirs_hist.pop(0)
 
-def print_pos(detection_result):
-  hand_landmarks_list = detection_result.hand_landmarks #list of landmarks, devuelve mas de una mano
-  for lm in hand_landmarks_list:
-    print(lm[tips_id[1]].x,lm[tips_id[1]].y,lm[tips_id[1]].z) #posicion del dedo indice
 
-def print_angle(detection_result):
-  hand_landmarks_list = detection_result.hand_landmarks #list of landmarks, devuelve mas de una mano
-  for lm in hand_landmarks_list:
-    x= lm[tips_id[1]].x - lm[tips_id[1]-3].x
-    y= - lm[tips_id[1]].y + lm[tips_id[1]-3].y
-    print(math.atan2(y,x)) #angulo en radianes
-
-def print_distance(detection_result):
-    hand_landmarks_list = detection_result.hand_landmarks #list of landmarks, devuelve mas de una mano
-    for lm in hand_landmarks_list:
-        x1= lm[tips_id[1]].x
-        x2= lm[tips_id[1]-3].x
-        y1=lm[tips_id[1]].y
-        y2=lm[tips_id[1]-3].y
-        print(math.sqrt((x2-x2)**2 + (y1-y2)**2)) #ditancia euclideana
 
 
 def finger_infov2(lm):
@@ -191,23 +172,6 @@ def pulgar_centro_palma(lm):
     else:
         return False
 
-
-
-
-
-def draw_bb_with_letter(image,letter,size):
-
-  font = cv2.FONT_HERSHEY_SIMPLEX
-  font_size = 3
-  font_color = (255,255,255) #BGR
-  font_thickness = 3
-
-  h, w, _ = image.shape
-  text_size = cv2.getTextSize(letter, font, font_size, font_thickness)[0]
-  text_w, text_h = text_size
-  cv2.putText(image, letter, (int((w - text_w) / 2), int((h + text_h) / 2)), font, font_size, font_color, font_thickness)
-
-  return image
 
 def draw_bb_with_letter(image,detection_result,letter):
   
@@ -382,8 +346,7 @@ with HandLandmarker.create_from_options(options) as landmarker:
     landmarker.detect_async(mp_image, frame_timestamp_ms)
     if detection_result is not None:
       image = draw_landmarks_on_image(mp_image.numpy_view(), detection_result)
-      #print_pos(detection_result)
-      #print_angle(detection_result)
+
 
       if(len(detection_result.hand_landmarks) > 0):
         lm= detection_result.hand_landmarks[0]
